@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+
+    <title>My Bookings</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <h2 class="text-center mb-4">
+        📅 My Bookings
+    </h2>
+
+    {% for item in booking_list %}
+
+    <div class="card shadow mb-4">
+
+        <div class="row g-0">
+
+            <div class="col-md-4">
+
+                <img
+                    src="{% static 'images/' %}{{ item.boat.image_file }}"
+                    class="card-img-top"
+                    height="240"
+                    style="object-fit:cover;"
+                    alt="{{ item.boat.houseboatname }}"
+                >
+
+            </div>
+
+            <div class="col-md-8">
+
+                <div class="card-body">
+
+                    <h3 class="fw-bold">
+
+                        {{ item.boat.houseboatname }}
+
+                    </h3>
+
+                    <p>
+                        📍 <b>Location:</b>
+                        {{ item.boat.location }}
+                    </p>
+
+                    <p>
+                        💰 <b>Price:</b>
+                        ₹ {{ item.boat.priceinr }}
+                    </p>
+
+                    <p>
+                        ⭐ <b>Rating:</b>
+                        {{ item.boat.rating }}
+                    </p>
+
+                    <hr>
+
+                    <p>
+                        <b>Booked By:</b>
+                        {{ item.booking.customer_name }}
+                    </p>
+
+                    <p>
+                        <b>Email:</b>
+                        {{ item.booking.email }}
+                    </p>
+
+                    <p>
+                        <b>Phone:</b>
+                        {{ item.booking.phone }}
+                    </p>
+
+                    <p>
+                        <b>Check In:</b>
+                        {{ item.booking.checkin }}
+                    </p>
+
+                    <p>
+                        <b>Check Out:</b>
+                        {{ item.booking.checkout }}
+                    </p>
+
+                    <p>
+                        <b>Guests:</b>
+                        {{ item.booking.guests }}
+                    </p>
+
+                    <hr>
+
+                    <p>
+                        <b>Status:</b>
+
+                        {% if item.booking.status == "Pending" %}
+
+                            <span class="badge bg-warning text-dark">
+                                ⏳ Pending
+                            </span>
+
+                        {% elif item.booking.status == "Approved" %}
+
+                            <span class="badge bg-success">
+                                ✅ Approved
+                            </span>
+
+                        {% elif item.booking.status == "Rejected" %}
+
+                            <span class="badge bg-danger">
+                                ❌ Rejected
+                            </span>
+
+                        {% endif %}
+
+                    </p>
+
+                    {% if item.booking.status == "Pending" %}
+
+                    <div class="mt-3">
+
+                        <a
+                            href="{% url 'cancel_booking' item.booking.id %}"
+                            class="btn btn-danger"
+                            onclick="return confirm('Are you sure you want to cancel this booking?');"
+                        >
+                            ❌ Cancel Booking
+                        </a>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="alert alert-warning text-center">
+
+        No bookings found.
+
+    </div>
+
+    {% endfor %}
+
+    <div class="text-center mt-4">
+
+        <a
+            href="{% url 'home' %}"
+            class="btn btn-primary"
+        >
+            ← Back Home
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

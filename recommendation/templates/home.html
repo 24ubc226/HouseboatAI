@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Houseboat AI | AI-Powered Houseboat Recommendation</title>
+
+
+<!-- ================= BOOTSTRAP ================= -->
+
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+>
+
+<!-- ================= BOOTSTRAP ICONS ================= -->
+
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+>
+
+
+<style>
+
+    /* =====================================================
+       GLOBAL
+    ===================================================== */
+
+    body {
+
+        margin: 0;
+
+        font-family:
+            "Segoe UI",
+            Tahoma,
+            Geneva,
+            Verdana,
+            sans-serif;
+
+        background-color: #f5f8fa;
+
+        color: #12343b;
+
+    }
+
+
+    /* =====================================================
+       NAVBAR
+    ===================================================== */
+
+    .main-navbar {
+
+        background:
+            linear-gradient(
+                135deg,
+                #062c35,
+                #064e5a
+            );
+
+        box-shadow:
+            0 4px 20px
+            rgba(0, 0, 0, 0.15);
+
+    }
+
+
+    .navbar-brand {
+
+        font-size: 1.6rem;
+
+        font-weight: 700;
+
+        color: white !important;
+
+        letter-spacing: 0.5px;
+
+    }
+
+
+    .navbar-brand span {
+
+        color: #00d4c8;
+
+    }
+
+
+    .nav-link {
+
+        color: rgba(255,255,255,0.85) !important;
+
+        font-weight: 500;
+
+        transition: 0.3s;
+
+    }
+
+
+    .nav-link:hover {
+
+        color: #00d4c8 !important;
+
+    }
+
+
+    .nav-btn {
+
+        border-radius: 10px;
+
+        padding:
+            8px 15px;
+
+        font-weight: 600;
+
+    }
+
+
+    /* =====================================================
+       HERO SECTION
+    ===================================================== */
+
+    .hero-section {
+
+        position: relative;
+
+        min-height: 560px;
+
+        display: flex;
+
+        align-items: center;
+
+        overflow: hidden;
+
+        background:
+
+            linear-gradient(
+                rgba(3, 38, 48, 0.72),
+                rgba(0, 91, 102, 0.78)
+            ),
+
+            url("{% static 'images/HB0001.jpg' %}");
+
+        background-size: cover;
+
+        background-position: center;
+
+    }
+
+
+    .hero-section::before {
+
+        content: "";
+
+        position: absolute;
+
+        width: 500px;
+
+        height: 500px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(0, 212, 200, 0.12);
+
+        top: -250px;
+
+        right: -150px;
+
+    }
+
+
+    .hero-section::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 300px;
+
+        height: 300px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(255, 255, 255, 0.06);
+
+        bottom: -150px;
+
+        left: -100px;
+
+    }
+
+
+    .hero-content {
+
+        position: relative;
+
+        z-index: 2;
+
+        color: white;
+
+        max-width: 850px;
+
+    }
+
+
+    .hero-badge {
+
+        display: inline-block;
+
+        padding:
+            8px 18px;
+
+        border-radius: 50px;
+
+        background:
+            rgba(255,255,255,0.15);
+
+        border:
+            1px solid
+            rgba(255,255,255,0.3);
+
+        backdrop-filter:
+            blur(10px);
+
+        font-size: 0.95rem;
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .hero-title {
+
+        font-size:
+            clamp(2.4rem, 6vw, 4.5rem);
+
+        font-weight: 800;
+
+        line-height: 1.1;
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .hero-title span {
+
+        color: #00e0d0;
+
+    }
+
+
+    .hero-description {
+
+        font-size: 1.2rem;
+
+        max-width: 650px;
+
+        margin:
+            0 auto 30px;
+
+        color:
+            rgba(255,255,255,0.9);
+
+    }
+
+
+    .hero-btn {
+
+        padding:
+            13px 28px;
+
+        border-radius: 50px;
+
+        font-weight: 700;
+
+        margin: 5px;
+
+        transition:
+            0.3s ease;
+
+    }
+
+
+    .hero-btn:hover {
+
+        transform:
+            translateY(-3px);
+
+        box-shadow:
+            0 10px 25px
+            rgba(0,0,0,0.25);
+
+    }
+
+
+    /* =====================================================
+       SEARCH SECTION
+    ===================================================== */
+
+    .search-wrapper {
+
+        margin-top:
+            -55px;
+
+        position: relative;
+
+        z-index: 10;
+
+    }
+
+
+    .search-card {
+
+        background:
+            white;
+
+        border-radius:
+            20px;
+
+        padding:
+            25px;
+
+        box-shadow:
+            0 15px 40px
+            rgba(0,0,0,0.12);
+
+    }
+
+
+    .search-title {
+
+        font-size:
+            1.3rem;
+
+        font-weight:
+            700;
+
+        color:
+            #12343b;
+
+    }
+
+
+    .search-input {
+
+        height:
+            48px;
+
+        border-radius:
+            10px;
+
+        border:
+            1px solid #d9e2e6;
+
+    }
+
+
+    .search-input:focus {
+
+        border-color:
+            #00a6a6;
+
+        box-shadow:
+            0 0 0 3px
+            rgba(0,166,166,0.1);
+
+    }
+
+
+    .search-btn {
+
+        height:
+            48px;
+
+        border-radius:
+            10px;
+
+        font-weight:
+            600;
+
+        background:
+            #008f8c;
+
+        border:
+            none;
+
+    }
+
+
+    .search-btn:hover {
+
+        background:
+            #006f70;
+
+    }
+
+
+    .reset-btn {
+
+        height:
+            48px;
+
+        border-radius:
+            10px;
+
+    }
+
+
+    /* =====================================================
+       HOUSEBOAT SECTION
+    ===================================================== */
+
+    .boats-section {
+
+        padding:
+            90px 0;
+
+    }
+
+
+    .section-badge {
+
+        color:
+            #008f8c;
+
+        font-weight:
+            700;
+
+        text-transform:
+            uppercase;
+
+        letter-spacing:
+            2px;
+
+        font-size:
+            0.85rem;
+
+    }
+
+
+    .section-title {
+
+        font-size:
+            2.5rem;
+
+        font-weight:
+            800;
+
+        color:
+            #12343b;
+
+    }
+
+
+    .section-description {
+
+        color:
+            #6c7a80;
+
+        max-width:
+            600px;
+
+        margin:
+            auto;
+
+    }
+
+
+    /* =====================================================
+       HOUSEBOAT CARD
+    ===================================================== */
+
+    .boat-card {
+
+        border:
+            none;
+
+        border-radius:
+            18px;
+
+        overflow:
+            hidden;
+
+        background:
+            white;
+
+        height:
+            100%;
+
+        transition:
+            all 0.3s ease;
+
+        box-shadow:
+            0 5px 20px
+            rgba(0,0,0,0.07);
+
+    }
+
+
+    .boat-card:hover {
+
+        transform:
+            translateY(-8px);
+
+        box-shadow:
+            0 15px 35px
+            rgba(0,0,0,0.15);
+
+    }
+
+
+    .boat-image-wrapper {
+
+        position:
+            relative;
+
+        overflow:
+            hidden;
+
+    }
+
+
+    .boat-image {
+
+        width:
+            100%;
+
+        height:
+            230px;
+
+        object-fit:
+            cover;
+
+        transition:
+            transform 0.5s ease;
+
+    }
+
+
+    .boat-card:hover
+    .boat-image {
+
+        transform:
+            scale(1.06);
+
+    }
+
+
+    .price-badge {
+
+        position:
+            absolute;
+
+        top:
+            15px;
+
+        right:
+            15px;
+
+        background:
+            white;
+
+        color:
+            #008f8c;
+
+        padding:
+            7px 12px;
+
+        border-radius:
+            30px;
+
+        font-weight:
+            700;
+
+        box-shadow:
+            0 4px 12px
+            rgba(0,0,0,0.15);
+
+    }
+
+
+    .boat-card-body {
+
+        padding:
+            22px;
+
+    }
+
+
+    .boat-name {
+
+        font-size:
+            1.25rem;
+
+        font-weight:
+            700;
+
+        color:
+            #12343b;
+
+    }
+
+
+    .boat-location {
+
+        color:
+            #6c7a80;
+
+        font-size:
+            0.95rem;
+
+    }
+
+
+    .boat-rating {
+
+        color:
+            #f5a623;
+
+        font-weight:
+            600;
+
+    }
+
+
+    .boat-info {
+
+        display:
+            flex;
+
+        gap:
+            8px;
+
+        flex-wrap:
+            wrap;
+
+        margin:
+            15px 0;
+
+    }
+
+
+    .info-badge {
+
+        background:
+            #eef8f8;
+
+        color:
+            #006f70;
+
+        padding:
+            5px 9px;
+
+        border-radius:
+            6px;
+
+        font-size:
+            0.8rem;
+
+    }
+
+
+    .details-btn {
+
+        width:
+            100%;
+
+        border-radius:
+            10px;
+
+        padding:
+            10px;
+
+        font-weight:
+            600;
+
+    }
+
+
+    /* =====================================================
+       EMPTY RESULTS
+    ===================================================== */
+
+    .empty-box {
+
+        background:
+            white;
+
+        padding:
+            60px 20px;
+
+        border-radius:
+            20px;
+
+        box-shadow:
+            0 5px 20px
+            rgba(0,0,0,0.06);
+
+    }
+
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+
+    footer {
+
+        background:
+            #062c35;
+
+        color:
+            rgba(255,255,255,0.8);
+
+        padding:
+            50px 0 20px;
+
+    }
+
+
+    .footer-brand {
+
+        color:
+            white;
+
+        font-size:
+            1.5rem;
+
+        font-weight:
+            700;
+
+    }
+
+
+    .footer-title {
+
+        color:
+            white;
+
+        font-weight:
+            700;
+
+        margin-bottom:
+            15px;
+
+    }
+
+
+    .footer-link {
+
+        color:
+            rgba(255,255,255,0.7);
+
+        text-decoration:
+            none;
+
+        display:
+            block;
+
+        margin-bottom:
+            8px;
+
+    }
+
+
+    .footer-link:hover {
+
+        color:
+            #00d4c8;
+
+    }
+
+
+    .footer-bottom {
+
+        border-top:
+            1px solid
+            rgba(255,255,255,0.1);
+
+        margin-top:
+            35px;
+
+        padding-top:
+            20px;
+
+        text-align:
+            center;
+
+        font-size:
+            0.9rem;
+
+    }
+
+
+    /* =====================================================
+       MOBILE RESPONSIVE
+    ===================================================== */
+
+    @media
+    (max-width: 991px) {
+
+        .search-wrapper {
+
+            margin-top:
+                20px;
+
+        }
+
+        .hero-section {
+
+            min-height:
+                520px;
+
+        }
+
+        .navbar-actions {
+
+            margin-top:
+                15px;
+
+        }
+
+    }
+
+
+    @media
+    (max-width: 576px) {
+
+        .hero-section {
+
+            min-height:
+                600px;
+
+        }
+
+        .hero-title {
+
+            font-size:
+                2.4rem;
+
+        }
+
+        .hero-description {
+
+            font-size:
+                1rem;
+
+        }
+
+        .section-title {
+
+            font-size:
+                2rem;
+
+        }
+
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar navbar-expand-lg main-navbar py-3">
+
+<div class="container">
+
+    <!-- Logo -->
+
+    <a
+        class="navbar-brand"
+        href="{% url 'home' %}"
+    >
+
+         Houseboat <span>AI</span>
+
+    </a>
+
+
+    <!-- Mobile Toggle -->
+
+    <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#mainNavbar"
+    >
+
+        <span class="navbar-toggler-icon"></span>
+
+    </button>
+
+
+    <!-- Navigation -->
+
+    <div
+        class="collapse navbar-collapse"
+        id="mainNavbar"
+    >
+
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+
+
+            <!-- About -->
+
+            <li class="nav-item">
+
+                <a
+                    class="nav-link"
+                    href="{% url 'about' %}"
+                >
+
+                    <i class="bi bi-info-circle"></i>
+                    About
+
+                </a>
+
+            </li>
+
+
+            {% if user.is_authenticated %}
+
+
+            <!-- User Dashboard -->
+
+            <li class="nav-item">
+
+                <a
+                    class="nav-link"
+                    href="{% url 'user_dashboard' %}"
+                >
+
+                    <i class="bi bi-person-circle"></i>
+                    Dashboard
+
+                </a>
+
+            </li>
+
+
+            <!-- My Bookings -->
+
+            <li class="nav-item">
+
+                <a
+                    class="nav-link"
+                    href="{% url 'my_bookings' %}"
+                >
+
+                    <i class="bi bi-calendar-check"></i>
+                    Bookings
+
+                </a>
+
+            </li>
+
+
+            <!-- Wishlist -->
+
+            <li class="nav-item">
+
+                <a
+                    class="nav-link"
+                    href="{% url 'my_wishlist' %}"
+                >
+
+                    <i class="bi bi-heart"></i>
+                    Wishlist
+
+                </a>
+
+            </li>
+
+
+            <!-- Admin Dashboard -->
+
+            {% if request.user.is_staff %}
+
+            <li class="nav-item">
+
+                <a
+                    class="btn btn-outline-info nav-btn ms-lg-2"
+                    href="{% url 'admin_dashboard' %}"
+                >
+
+                    <i class="bi bi-speedometer2"></i>
+                    Admin Dashboard
+
+                </a>
+
+            </li>
+
+            {% endif %}
+
+
+            <!-- Logout -->
+
+            <li class="nav-item">
+
+                <a
+                    class="btn btn-danger nav-btn ms-lg-2"
+                    href="{% url 'logout' %}"
+                >
+
+                    <i class="bi bi-box-arrow-right"></i>
+                    Logout
+
+                </a>
+
+            </li>
+
+
+            {% else %}
+
+
+            <!-- Login -->
+
+            <li class="nav-item">
+
+                <a
+                    class="btn btn-success nav-btn ms-lg-2"
+                    href="{% url 'login' %}"
+                >
+
+                    Login
+
+                </a>
+
+            </li>
+
+
+            <!-- Register -->
+
+            <li class="nav-item">
+
+                <a
+                    class="btn btn-primary nav-btn"
+                    href="{% url 'register' %}"
+                >
+
+                    Register
+
+                </a>
+
+            </li>
+
+
+            {% endif %}
+
+
+        </ul>
+
+    </div>
+
+</div>
+```
+
+</nav>
+
+<!-- =====================================================
+     HERO SECTION
+===================================================== -->
+
+<section class="hero-section">
+
+```
+<div class="container text-center">
+
+    <div class="hero-content mx-auto">
+
+
+        <div class="hero-badge">
+
+            <i class="bi bi-stars"></i>
+
+            AI-Powered Houseboat Discovery
+
+        </div>
+
+
+        <h1 class="hero-title">
+
+            Find Your
+            <span>Perfect Houseboat</span>
+
+        </h1>
+
+
+        <p class="hero-description">
+
+            Discover the perfect houseboat for your next
+            Kerala backwater adventure with intelligent
+            AI-powered recommendations.
+
+        </p>
+
+
+        <div>
+
+
+            <a
+                href="#boats"
+                class="btn btn-warning hero-btn"
+            >
+
+                <i class="bi bi-compass"></i>
+
+                Explore Houseboats
+
+            </a>
+
+
+            <a
+                href="{% url 'recommend' %}"
+                class="btn btn-light hero-btn"
+            >
+
+                <i class="bi bi-robot"></i>
+
+                Find My Perfect Houseboat
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+```
+
+</section>
+
+<!-- =====================================================
+     SEARCH & FILTER SECTION
+===================================================== -->
+
+<section class="search-wrapper">
+
+```
+<div class="container">
+
+    <div class="search-card">
+
+
+        <div class="text-center mb-4">
+
+            <div class="search-title">
+
+                <i class="bi bi-search"></i>
+
+                Find Your Ideal Houseboat
+
+            </div>
+
+            <small class="text-muted">
+
+                Search and filter houseboats based on your preferences
+
+            </small>
+
+        </div>
+
+
+        <form
+            method="GET"
+            action="{% url 'home' %}"
+        >
+
+            <div class="row g-3">
+
+
+                <!-- Location -->
+
+                <div class="col-lg-3 col-md-6">
+
+                    <label class="form-label fw-semibold">
+
+                        Location
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control search-input"
+                        placeholder="📍 Enter location"
+                        value="{{ request.GET.search|default:'' }}"
+                    >
+
+                </div>
+
+
+                <!-- Price -->
+
+                <div class="col-lg-2 col-md-6">
+
+                    <label class="form-label fw-semibold">
+
+                        Maximum Price
+
+                    </label>
+
+                    <input
+                        type="number"
+                        name="price"
+                        class="form-control search-input"
+                        placeholder="₹ Max price"
+                        value="{{ request.GET.price|default:'' }}"
+                    >
+
+                </div>
+
+
+                <!-- Sort -->
+
+                <div class="col-lg-2 col-md-4">
+
+                    <label class="form-label fw-semibold">
+
+                        Sort Price
+
+                    </label>
+
+                    <select
+                        name="sort"
+                        class="form-select search-input"
+                    >
+
+                        <option value="">
+
+                            Default
+
+                        </option>
+
+                        <option
+                            value="low"
+                            {% if request.GET.sort == "low" %}
+                            selected
+                            {% endif %}
+                        >
+
+                            Low → High
+
+                        </option>
+
+                        <option
+                            value="high"
+                            {% if request.GET.sort == "high" %}
+                            selected
+                            {% endif %}
+                        >
+
+                            High → Low
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- AC -->
+
+                <div class="col-lg-2 col-md-4">
+
+                    <label class="form-label fw-semibold">
+
+                        AC
+
+                    </label>
+
+                    <select
+                        name="ac"
+                        class="form-select search-input"
+                    >
+
+                        <option value="">
+
+                            Any
+
+                        </option>
+
+                        <option
+                            value="Yes"
+                            {% if request.GET.ac == "Yes" %}
+                            selected
+                            {% endif %}
+                        >
+
+                            AC Available
+
+                        </option>
+
+                        <option
+                            value="No"
+                            {% if request.GET.ac == "No" %}
+                            selected
+                            {% endif %}
+                        >
+
+                            No AC
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- WiFi -->
+
+                <div class="col-lg-2 col-md-4">
+
+                    <label class="form-label fw-semibold">
+
+                        WiFi
+
+                    </label>
+
+                    <select
+                        name="wifi"
+                        class="form-select search-input"
+                    >
+
+                        <option value="">
+
+                            Any
+
+                        </option>
+
+                        <option
+                            value="Yes"
+                            {% if request.GET.wifi == "Yes" %}
+                            selected
+                            {% endif %}
+                        >
+
+                            WiFi Available
+
+                        </option>
+
+                        <option
+                            value="No"
+                            {% if request.GET.wifi == "No" %}
+                            selected
+                            {% endif %}
+                        >
+
+                            No WiFi
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="col-lg-1 col-md-12 d-flex align-items-end gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-success search-btn w-100"
+                    >
+
+                        <i class="bi bi-search"></i>
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- Reset -->
+
+            <div class="text-center mt-3">
+
+                <a
+                    href="{% url 'home' %}"
+                    class="btn btn-outline-secondary reset-btn px-4"
+                >
+
+                    <i class="bi bi-arrow-counterclockwise"></i>
+
+                    Reset Filters
+
+                </a>
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- =====================================================
+     HOUSEBOAT SECTION
+===================================================== -->
+
+<section
+    class="boats-section"
+    id="boats"
+>
+
+
+<div class="container">
+
+
+    <!-- Section Heading -->
+
+    <div class="text-center mb-5">
+
+
+        <div class="section-badge">
+
+            Explore Kerala
+
+        </div>
+
+
+        <h2 class="section-title mt-2">
+
+            Our Featured Houseboats
+
+        </h2>
+
+
+        <p class="section-description">
+
+            Choose from our collection of comfortable
+            and luxurious houseboats for an unforgettable
+            journey through Kerala's beautiful backwaters.
+
+        </p>
+
+
+    </div>
+
+
+
+    <!-- Houseboat Grid -->
+
+    <div class="row g-4">
+
+
+        {% for boat in houseboats %}
+
+
+        <div class="col-xl-4 col-lg-4 col-md-6">
+
+
+            <div class="boat-card">
+
+
+                <!-- Image -->
+
+                <div class="boat-image-wrapper">
+
+
+                    <img
+                        src="{% static 'images/' %}{{ boat.image_file }}"
+                        class="boat-image"
+                        alt="{{ boat.houseboatname }}"
+                        loading="lazy"
+                    >
+
+
+                    <!-- Price -->
+
+                    <div class="price-badge">
+
+                        ₹{{ boat.priceinr }}
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- Card Body -->
+
+                <div class="boat-card-body">
+
+
+                    <h3 class="boat-name">
+
+                        {{ boat.houseboatname }}
+
+                    </h3>
+
+
+                    <p class="boat-location mb-2">
+
+                        <i class="bi bi-geo-alt-fill"></i>
+
+                        {{ boat.location }}
+
+                    </p>
+
+
+                    <div class="boat-rating">
+
+                        <i class="bi bi-star-fill"></i>
+
+                        {{ boat.rating }}
+
+                    </div>
+
+
+                    <!-- Features -->
+
+                    <div class="boat-info">
+
+
+                        {% if boat.ac == "Yes" %}
+
+                        <span class="info-badge">
+
+                            <i class="bi bi-snow"></i>
+                            AC
+
+                        </span>
+
+                        {% endif %}
+
+
+                        {% if boat.wifi == "Yes" %}
+
+                        <span class="info-badge">
+
+                            <i class="bi bi-wifi"></i>
+                            WiFi
+
+                        </span>
+
+                        {% endif %}
+
+
+                        <span class="info-badge">
+
+                            <i class="bi bi-door-open"></i>
+
+                            {{ boat.bedrooms }} Bedrooms
+
+                        </span>
+
+
+                        <span class="info-badge">
+
+                            <i class="bi bi-people"></i>
+
+                            {{ boat.capacity }} Guests
+
+                        </span>
+
+
+                    </div>
+
+
+                    <!-- Details -->
+
+                    <a
+                        href="{% url 'details' boat.houseboatid %}"
+                        class="btn btn-primary details-btn"
+                    >
+
+                        View Houseboat Details
+
+                        <i class="bi bi-arrow-right ms-2"></i>
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        {% empty %}
+
+
+        <!-- No Results -->
+
+        <div class="col-12">
+
+
+            <div class="empty-box text-center">
+
+
+                <i
+                    class="bi bi-house-exclamation"
+                    style="font-size: 3rem; color: #008f8c;"
+                ></i>
+
+
+                <h3 class="mt-3">
+
+                    No Houseboats Found
+
+                </h3>
+
+
+                <p class="text-muted">
+
+                    Try changing your search or filter options.
+
+                </p>
+
+
+                <a
+                    href="{% url 'home' %}"
+                    class="btn btn-success"
+                >
+
+                    Clear Filters
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+
+</div>
+
+
+</section>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+<div class="container">
+
+
+    <div class="row g-4">
+
+
+        <!-- Brand -->
+
+        <div class="col-lg-5">
+
+
+            <div class="footer-brand">
+
+                🚤 Houseboat AI
+
+            </div>
+
+
+            <p class="mt-3">
+
+                Your intelligent companion for discovering
+                the perfect houseboat experience across
+                Kerala's beautiful backwaters.
+
+            </p>
+
+
+        </div>
+
+
+        <!-- Quick Links -->
+
+        <div class="col-lg-3">
+
+
+            <div class="footer-title">
+
+                Quick Links
+
+            </div>
+
+
+            <a
+                href="{% url 'home' %}"
+                class="footer-link"
+            >
+
+                Home
+
+            </a>
+
+
+            <a
+                href="{% url 'about' %}"
+                class="footer-link"
+            >
+
+                About Us
+
+            </a>
+
+
+            <a
+                href="{% url 'recommend' %}"
+                class="footer-link"
+            >
+
+                AI Recommendation
+
+            </a>
+
+
+            <a
+                href="{% url 'contact' %}"
+                class="footer-link"
+            >
+
+                Contact
+
+            </a>
+
+
+        </div>
+
+
+        <!-- Services -->
+
+        <div class="col-lg-4">
+
+
+            <div class="footer-title">
+
+                Our Features
+
+            </div>
+
+
+            <p class="mb-2">
+
+                <i class="bi bi-check-circle"></i>
+
+                AI-Powered Recommendations
+
+            </p>
+
+
+            <p class="mb-2">
+
+                <i class="bi bi-check-circle"></i>
+
+                Smart Search & Filtering
+
+            </p>
+
+
+            <p class="mb-2">
+
+                <i class="bi bi-check-circle"></i>
+
+                Online Houseboat Booking
+
+            </p>
+
+
+            <p class="mb-2">
+
+                <i class="bi bi-check-circle"></i>
+
+                Wishlist Management
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        © 2026 Houseboat AI.
+
+        AI-Powered Houseboat Recommendation System.
+
+        All Rights Reserved.
+
+    </div>
+
+
+</div>
+
+
+</footer>
+
+<!-- =====================================================
+     BOOTSTRAP JS
+===================================================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+</body>
+
+</html>
