@@ -147,8 +147,8 @@
                 rgba(3, 38, 48, 0.72),
                 rgba(0, 91, 102, 0.78)
             ),
+url("{% static 'images/hb_0001.jpg' %}");
 
-            url("{% static 'images/HB0001.jpg' %}");
 
         background-size: cover;
 
@@ -893,7 +893,6 @@
 
     </a>
 
-
     <!-- Mobile Toggle -->
 
     <button
@@ -935,6 +934,9 @@
             </li>
 
 
+<a href="{% url 'rag' %}" class="btn btn-outline-light ms-2">
+    ðŸ¤– AI Chatbot
+</a>
             {% if user.is_authenticated %}
 
 
@@ -1202,7 +1204,7 @@
                         type="text"
                         name="search"
                         class="form-control search-input"
-                        placeholder="📍 Enter location"
+                        placeholder="ðŸ“ Enter location"
                         value="{{ request.GET.search|default:'' }}"
                     >
 
@@ -1223,7 +1225,7 @@
                         type="number"
                         name="price"
                         class="form-control search-input"
-                        placeholder="₹ Max price"
+                        placeholder="â‚¹ Max price"
                         value="{{ request.GET.price|default:'' }}"
                     >
 
@@ -1258,7 +1260,7 @@
                             {% endif %}
                         >
 
-                            Low → High
+                            Low â†’ High
 
                         </option>
 
@@ -1269,7 +1271,7 @@
                             {% endif %}
                         >
 
-                            High → Low
+                            High â†’ Low
 
                         </option>
 
@@ -1485,19 +1487,19 @@
                 <div class="boat-image-wrapper">
 
 
-                    <img
-                        src="{% static 'images/' %}{{ boat.image_file }}"
-                        class="boat-image"
-                        alt="{{ boat.houseboatname }}"
-                        loading="lazy"
-                    >
+                   <img
+    src="{% static 'images/' %}{{ boat.imagefile }}"
+    class="boat-image"
+    alt="{{ boat.houseboatname }}"
+    loading="lazy"
+>
 
 
                     <!-- Price -->
 
                     <div class="price-badge">
 
-                        ₹{{ boat.priceinr }}
+                        â‚¹{{ boat.priceinr }}
 
                     </div>
 
@@ -1685,7 +1687,7 @@
 
             <div class="footer-brand">
 
-                🚤 Houseboat AI
+                ðŸš¤ Houseboat AI
 
             </div>
 
@@ -1813,7 +1815,7 @@
 
     <div class="footer-bottom">
 
-        © 2026 Houseboat AI.
+        Â© 2026 Houseboat AI.
 
         AI-Powered Houseboat Recommendation System.
 

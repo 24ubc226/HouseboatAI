@@ -35,30 +35,26 @@ def assign_houseboat_image(boat):
     based on the Houseboat ID.
 
     Example:
-    HB0001 -> HB0001.jpg
-    HB0012 -> HB0012.jpg
-    HB0013 -> HB0001.jpg
-    HB0014 -> HB0002.jpg
+    HB0001 -> hb_0001.jpg
+    HB0012 -> hb_0012.jpg
+    HB0013 -> hb_0001.jpg
+    HB0014 -> hb_0002.jpg
     """
 
     try:
-        boat_number = int(
-            str(boat.houseboatid).replace("HB", "")
-        )
+        # Get numeric part of Houseboat ID
+        number = int(str(boat.houseboatid).replace("HB", ""))
 
-        image_number = (
-            (boat_number - 1) % 12
-        ) + 1
+        # Cycle through 12 available images
+        image_number = ((number - 1) % 12) + 1
 
-        boat.image_file = (
-            f"HB{image_number:04d}.jpg"
-        )
+        # Return filename matching the actual static image files
+        boat.imagefile = f"hb_{image_number:04d}.jpg"
 
-    except (ValueError, TypeError):
-        boat.image_file = "HB0001.jpg"
+    except (ValueError, AttributeError):
+        boat.imagefile = "hb_0001.jpg"
 
     return boat
-
 
 # =========================================================
 # ADMIN DASHBOARD
@@ -1485,30 +1481,43 @@ def edit_houseboat(request, id):
     )
 def rag_chat(request):
 
+    # =========================================================
+    # OPEN RAG CHATBOT PAGE
+    # =========================================================
+
     if request.method == "GET":
         return render(request, "rag.html")
+
+    # =========================================================
+    # PROCESS CHATBOT QUESTION
+    # =========================================================
 
     if request.method == "POST":
 
         try:
 
-            data = json.loads(
-                request.body
-            )
+            # Read JSON sent from rag.html
+            data = json.loads(request.body)
 
-            question = data.get(
-                "question",
-                ""
-            ).strip()
+            # Get user's question
+            question = data.get("question", "").strip()
 
+            # Check empty question
             if not question:
 
                 return JsonResponse({
                     "answer": "Please ask me something about the houseboats."
                 })
 
-            # Send question to RAG system
+            # =================================================
+            # SEND QUESTION TO RAG SYSTEM
+            # =================================================
+
             answer = ask_rag(question)
+
+            # =================================================
+            # SEND AI ANSWER BACK TO JAVASCRIPT
+            # =================================================
 
             return JsonResponse({
                 "answer": answer
@@ -1518,10 +1527,471 @@ def rag_chat(request):
 
             print("RAG ERROR:", e)
 
-            return JsonResponse(
-                {
-                    "answer":
-                    "Sorry, I couldn't process your question right now."
-                },
-                status=500
+            return JsonResponse({
+                "answer": "Sorry, I couldn't process your question right now."
+            }, status=500)
+
+    # =========================================================
+    # INVALID REQUEST METHOD
+    # =========================================================
+
+    return JsonResponse({
+        "answer": "Invalid request."
+    }, status=400)
+def ask_rag(question):
+    """
+    Houseboat AI chatbot.
+
+    Supports:
+    - Luxury
+    - Location
+    - Price
+    - Rating
+    - Bedrooms
+    - Capacity
+    - AC
+    - WiFi
+    - Cheapest
+    - Highest rated
+    - Combined filters
+    """
+
+    import re
+    from django.db.models import Q
+    from .models import ProfessionalHouseboatDataset500Rows
+
+    question_lower = question.lower().strip()
+
+    # =========================================================
+    # GET ALL HOUSEBOATS
+    # =========================================================
+
+    boats = ProfessionalHouseboatDataset500Rows.objects.all()
+
+    if not boats.exists():
+        return "Sorry, there are no houseboats available in the database."
+
+    # =========================================================
+    # SPECIAL SORTING QUESTIONS
+    # =========================================================
+
+    if (
+        "highest rating" in question_lower
+        or "highest rated" in question_lower
+        or "best rated" in question_lower
+        or "top rated" in question_lower
+    ):
+        boat = boats.order_by("-rating").first()
+
+        return (
+            f"⭐ The highest-rated houseboat is **{boat.houseboatname}**.\n\n"
+            f"📍 Location: {boat.location}\n"
+            f"💰 Price: ₹{boat.priceinr:,}\n"
+            f"⭐ Rating: {boat.rating}\n"
+            f"👥 Capacity: {boat.capacity} guests"
+        )
+
+    if (
+        "cheapest" in question_lower
+        or "lowest price" in question_lower
+        or "least expensive" in question_lower
+    ):
+        boat = boats.order_by("priceinr").first()
+
+        return (
+            f"💰 The cheapest houseboat is **{boat.houseboatname}**.\n\n"
+            f"📍 Location: {boat.location}\n"
+            f"💰 Price: ₹{boat.priceinr:,}\n"
+            f"⭐ Rating: {boat.rating}\n"
+            f"👥 Capacity: {boat.capacity} guests"
+        )
+
+    # =========================================================
+    # APPLY MULTIPLE FILTERS
+    # =========================================================
+
+    filtered_boats = boats
+
+    filters_applied = []
+
+    # =========================================================
+   # =========================================================
+   # LUXURY HOUSEBOATS
+# =========================================================
+
+    if "luxury" in question_lower:
+
+       luxury_boats = boats.filter(
+          luxury__iexact="Yes"
+       ).order_by("-rating")
+
+       if not luxury_boats.exists():
+        return "Sorry, I couldn't find any luxury houseboats."
+
+       results = []
+
+       for boat in luxury_boats[:10]:
+
+        results.append(
+            f"🏆 {boat.houseboatname} in {boat.location} "
+            f"costs ₹{boat.priceinr:,}, "
+            f"has a rating of ⭐{boat.rating}, "
+            f"and can accommodate {boat.capacity} guests."
+        )
+
+    return (
+        "Here are some luxury houseboats:\n\n"
+        + "\n".join(results)
+    )
+    # =========================================================
+    # LOCATION FILTER
+    # =========================================================
+
+    locations = [
+        "alleppey",
+        "alappuzha",
+        "kuttanad",
+        "kumarakom",
+        "kollam",
+        "munnar",
+        "idukki"
+    ]
+
+    detected_location = None
+
+    for location in locations:
+        if location in question_lower:
+            detected_location = location
+            break
+
+    if detected_location:
+
+        filtered_boats = filtered_boats.filter(
+            location__icontains=detected_location
+        )
+
+        filters_applied.append(detected_location)
+
+    # =========================================================
+    # PRICE FILTER
+    # =========================================================
+
+    price_match = re.search(
+        r"(?:under|below|less than|maximum|max|upto|up to)"
+        r"\s*₹?\s*(\d+(?:,\d+)*)",
+        question_lower
+    )
+
+    if price_match:
+
+        max_price = int(
+            price_match.group(1).replace(",", "")
+        )
+
+        filtered_boats = filtered_boats.filter(
+            priceinr__lte=max_price
+        )
+
+        filters_applied.append(
+            f"price under ₹{max_price:,}"
+        )
+
+    # =========================================================
+    # MINIMUM RATING
+    # =========================================================
+
+    rating_match = re.search(
+        r"(?:rating|rated|ratings?)"
+        r"\s*(?:above|over|greater than|more than|at least)?"
+        r"\s*(\d(?:\.\d)?)",
+        question_lower
+    )
+
+    if rating_match:
+
+        minimum_rating = float(
+            rating_match.group(1)
+        )
+
+        filtered_boats = filtered_boats.filter(
+            rating__gte=minimum_rating
+        )
+
+        filters_applied.append(
+            f"rating {minimum_rating}+"
+        )
+
+    # Also understand:
+    # "above 4.5 rating"
+
+    above_rating_match = re.search(
+        r"(?:above|over|greater than|more than)"
+        r"\s*(\d(?:\.\d)?)"
+        r"\s*(?:rating|stars?)?",
+        question_lower
+    )
+
+    if above_rating_match and not rating_match:
+
+        minimum_rating = float(
+            above_rating_match.group(1)
+        )
+
+        filtered_boats = filtered_boats.filter(
+            rating__gt=minimum_rating
+        )
+
+        filters_applied.append(
+            f"rating above {minimum_rating}"
+        )
+
+    # =========================================================
+    # BEDROOM FILTER
+    # =========================================================
+
+    bedroom_match = re.search(
+        r"(\d+)\s*(?:bedroom|bedrooms|bed|beds)",
+        question_lower
+    )
+
+    if bedroom_match:
+
+        bedrooms = int(
+            bedroom_match.group(1)
+        )
+
+        filtered_boats = filtered_boats.filter(
+            bedrooms=bedrooms
+        )
+
+        filters_applied.append(
+            f"{bedrooms} bedrooms"
+        )
+
+    # =========================================================
+    # CAPACITY FILTER
+    # =========================================================
+
+    guest_match = re.search(
+        r"(?:for|accommodate|accommodates)?\s*"
+        r"(\d+)\s*(?:guest|guests|people|persons)",
+        question_lower
+    )
+
+    if guest_match:
+
+        guests = int(
+            guest_match.group(1)
+        )
+
+        filtered_boats = filtered_boats.filter(
+            capacity__gte=guests
+        )
+
+        filters_applied.append(
+            f"capacity for {guests} guests"
+        )
+
+    # =========================================================
+    # AC FILTER
+    # =========================================================
+
+    if (
+        "with ac" in question_lower
+        or "ac houseboat" in question_lower
+        or "air conditioning" in question_lower
+        or "air-conditioned" in question_lower
+    ):
+
+        filtered_boats = filtered_boats.filter(
+            Q(ac__iexact="Yes") |
+            Q(ac__iexact="True") |
+            Q(ac__iexact="1")
+        )
+
+        filters_applied.append("AC")
+
+    # =========================================================
+    # WIFI FILTER
+    # =========================================================
+
+    if (
+        "wifi" in question_lower
+        or "wi-fi" in question_lower
+        or "internet" in question_lower
+    ):
+
+        filtered_boats = filtered_boats.filter(
+            Q(wifi__iexact="Yes") |
+            Q(wifi__iexact="True") |
+            Q(wifi__iexact="1")
+        )
+
+        filters_applied.append("WiFi")
+
+    # =========================================================
+    # CHECK RESULTS
+    # =========================================================
+
+    if filters_applied:
+
+        if not filtered_boats.exists():
+
+            return (
+                "Sorry, I couldn't find any houseboats matching "
+                "your requirements."
             )
+
+        # =====================================================
+        # ORDER RESULTS
+        # =====================================================
+
+        filtered_boats = filtered_boats.order_by(
+            "-rating",
+            "priceinr"
+        )
+
+        # =====================================================
+        # BUILD RESPONSE
+        # =====================================================
+
+        results = []
+
+        for boat in filtered_boats[:10]:
+
+            results.append(
+                f"🚤 **{boat.houseboatname}**\n"
+                f"📍 Location: {boat.location}\n"
+                f"💰 Price: ₹{boat.priceinr:,}\n"
+                f"⭐ Rating: {boat.rating}\n"
+                f"🛏 Bedrooms: {boat.bedrooms}\n"
+                f"👥 Capacity: {boat.capacity} guests\n"
+                f"❄️ AC: {boat.ac}\n"
+                f"📶 WiFi: {boat.wifi}\n"
+                f"🏆 Luxury: {boat.luxury}"
+            )
+
+        return (
+            "Here are the houseboats matching your requirements:\n\n"
+            + "\n\n".join(results)
+        )
+
+    # =========================================================
+    # GENERAL HOUSEBOAT SEARCH
+    # =========================================================
+
+    if (
+        "houseboat" in question_lower
+        or "boat" in question_lower
+    ):
+
+        general_boats = boats.order_by(
+            "-rating"
+        )[:10]
+
+        results = []
+
+        for boat in general_boats:
+
+            results.append(
+                f"🚤 **{boat.houseboatname}**\n"
+                f"📍 {boat.location}\n"
+                f"💰 ₹{boat.priceinr:,}\n"
+                f"⭐ {boat.rating}\n"
+                f"👥 {boat.capacity} guests"
+            )
+
+        return (
+            "Here are some houseboats you may like:\n\n"
+            + "\n\n".join(results)
+        )
+
+    # =========================================================
+    # FALLBACK
+    # =========================================================
+
+    return (
+        "🤖 I can help you find houseboats based on:\n\n"
+        "📍 Location\n"
+        "💰 Price\n"
+        "⭐ Rating\n"
+        "🛏 Bedrooms\n"
+        "👥 Capacity\n"
+        "❄️ AC\n"
+        "📶 WiFi\n"
+        "🏆 Luxury\n\n"
+        "Try asking:\n\n"
+        "• Show me luxury houseboats\n"
+        "• Show me luxury houseboats in Alleppey\n"
+        "• Show me houseboats under ₹15,000\n"
+        "• Show me houseboats with rating above 4.5\n"
+        "• Show me houseboats with 3 bedrooms\n"
+        "• Show me houseboats for 10 guests\n"
+        "• Show me luxury houseboats with AC and WiFi"
+    )
+
+
+def add_houseboat(request):
+
+    if request.method == "POST":
+
+        try:
+            boat = ProfessionalHouseboatDataset500Rows()
+
+            boat.houseboatid = request.POST.get("houseboatid")
+            boat.houseboatname = request.POST.get("houseboatname")
+            boat.location = request.POST.get("location")
+
+            boat.latitude = request.POST.get("latitude") or None
+            boat.longitude = request.POST.get("longitude") or None
+
+            boat.priceinr = request.POST.get("priceinr") or None
+            boat.season = request.POST.get("season")
+
+            boat.bedrooms = request.POST.get("bedrooms") or None
+            boat.capacity = request.POST.get("capacity") or None
+
+            boat.ac = request.POST.get("ac")
+            boat.luxury = request.POST.get("luxury")
+
+            boat.rating = request.POST.get("rating") or None
+            boat.reviewcount = request.POST.get("reviewcount") or None
+            boat.bookingcount = request.POST.get("bookingcount") or None
+
+            boat.food = request.POST.get("food")
+            boat.wifi = request.POST.get("wifi")
+            boat.tv = request.POST.get("tv")
+            boat.jacuzzi = request.POST.get("jacuzzi")
+            boat.fishing = request.POST.get("fishing")
+            boat.canoeing = request.POST.get("canoeing")
+            boat.upperdeck = request.POST.get("upperdeck")
+            boat.parking = request.POST.get("parking")
+            boat.petfriendly = request.POST.get("petfriendly")
+
+            boat.triptype = request.POST.get("triptype")
+            boat.suitablefor = request.POST.get("suitablefor")
+            boat.availability = request.POST.get("availability")
+            boat.imagefile = request.POST.get("imagefile")
+
+            boat.save(force_insert=True)
+
+            messages.success(
+                request,
+                "Houseboat added successfully!"
+            )
+
+            return redirect("admin_houseboats")
+
+        except Exception as e:
+
+            print("ADD HOUSEBOAT ERROR:", e)
+
+            messages.error(
+                request,
+                f"Could not add houseboat: {e}"
+            )
+
+    return render(
+        request,
+        "add_houseboat.html"
+    )

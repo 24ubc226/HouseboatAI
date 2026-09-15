@@ -18,7 +18,7 @@
 <div class="container mt-5">
 
     <h2 class="text-center mb-4">
-        📅 My Bookings
+        ðŸ“… My Bookings
     </h2>
 
     {% for item in booking_list %}
@@ -30,7 +30,8 @@
             <div class="col-md-4">
 
                 <img
-                    src="{% static 'images/' %}{{ item.boat.image_file }}"
+
+                   src="{% static 'images/' %}{{ item.boat.imagefile }}"
                     class="card-img-top"
                     height="240"
                     style="object-fit:cover;"
@@ -50,17 +51,17 @@
                     </h3>
 
                     <p>
-                        📍 <b>Location:</b>
+                        ðŸ“ <b>Location:</b>
                         {{ item.boat.location }}
                     </p>
 
                     <p>
-                        💰 <b>Price:</b>
-                        ₹ {{ item.boat.priceinr }}
+                        ðŸ’° <b>Price:</b>
+                        â‚¹ {{ item.boat.priceinr }}
                     </p>
 
                     <p>
-                        ⭐ <b>Rating:</b>
+                        â­ <b>Rating:</b>
                         {{ item.boat.rating }}
                     </p>
 
@@ -104,19 +105,19 @@
                         {% if item.booking.status == "Pending" %}
 
                             <span class="badge bg-warning text-dark">
-                                ⏳ Pending
+                                â³ Pending
                             </span>
 
                         {% elif item.booking.status == "Approved" %}
 
                             <span class="badge bg-success">
-                                ✅ Approved
+                                âœ… Approved
                             </span>
 
                         {% elif item.booking.status == "Rejected" %}
 
                             <span class="badge bg-danger">
-                                ❌ Rejected
+                                âŒ Rejected
                             </span>
 
                         {% endif %}
@@ -132,7 +133,7 @@
                             class="btn btn-danger"
                             onclick="return confirm('Are you sure you want to cancel this booking?');"
                         >
-                            ❌ Cancel Booking
+                            âŒ Cancel Booking
                         </a>
 
                     </div>
@@ -163,7 +164,7 @@
             href="{% url 'home' %}"
             class="btn btn-primary"
         >
-            ← Back Home
+            â† Back Home
         </a>
 
     </div>

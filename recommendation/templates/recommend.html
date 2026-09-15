@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 {% load static %}
 
@@ -95,7 +95,7 @@
         <a class="navbar-brand fw-bold"
            href="{% url 'home' %}">
 
-            🚤 Houseboat AI
+            ðŸš¤ Houseboat AI
 
         </a>
 
@@ -119,7 +119,7 @@
 
     <h1 class="display-5 fw-bold">
 
-        🤖 AI Find My Perfect Houseboat
+        ðŸ¤– AI Find My Perfect Houseboat
 
     </h1>
 
@@ -152,7 +152,7 @@
 
                 <h3 class="text-center fw-bold mb-4">
 
-                    🔍 Enter Your Preferences
+                    ðŸ” Enter Your Preferences
 
                 </h3>
 
@@ -168,7 +168,7 @@
 
                         <label class="form-label">
 
-                            📍 Preferred Location
+                            ðŸ“ Preferred Location
 
                         </label>
 
@@ -188,7 +188,7 @@
 
                         <label class="form-label">
 
-                            💰 Maximum Budget (₹)
+                            ðŸ’° Maximum Budget (â‚¹)
 
                         </label>
 
@@ -209,7 +209,7 @@
 
                         <label class="form-label">
 
-                            🛏 Number of Bedrooms
+                            ðŸ› Number of Bedrooms
 
                         </label>
 
@@ -230,7 +230,7 @@
 
                         <label class="form-label">
 
-                            👥 Number of Guests
+                            ðŸ‘¥ Number of Guests
 
                         </label>
 
@@ -251,7 +251,7 @@
 
                         <label class="form-label">
 
-                            ❄️ AC Required?
+                            â„ï¸ AC Required?
 
                         </label>
 
@@ -283,7 +283,7 @@
 
                         <label class="form-label">
 
-                            📶 WiFi Required?
+                            ðŸ“¶ WiFi Required?
 
                         </label>
 
@@ -315,7 +315,7 @@
 
                         <label class="form-label">
 
-                            🏆 Luxury Houseboat?
+                            ðŸ† Luxury Houseboat?
 
                         </label>
 
@@ -350,7 +350,7 @@
                             class="btn btn-primary btn-ai"
                         >
 
-                            🤖 Find My Perfect Houseboat
+                            ðŸ¤– Find My Perfect Houseboat
 
                         </button>
 
@@ -376,7 +376,7 @@
 
                     <h2 class="fw-bold">
 
-                        🤖 Your AI Recommended Houseboats
+                        ðŸ¤– Your AI Recommended Houseboats
 
                     </h2>
 
@@ -405,7 +405,7 @@
                             <!-- HOUSEBOAT IMAGE -->
 
                             <img
-                                src="{% static 'images/' %}{{ item.boat.image_file }}"
+                                src="{% static 'images/' %}{{ item.boat.imagefile }}"
                                 class="boat-image"
                                 alt="{{ item.boat.houseboatname }}"
                             >
@@ -427,7 +427,7 @@
 
                                 <p class="mb-2">
 
-                                    📍 {{ item.boat.location }}
+                                    ðŸ“ {{ item.boat.location }}
 
                                 </p>
 
@@ -436,7 +436,7 @@
 
                                 <p class="mb-2">
 
-                                    ⭐ {{ item.boat.rating }}
+                                    â­ {{ item.boat.rating }}
 
                                 </p>
 
@@ -445,7 +445,7 @@
 
                                 <p class="mb-3">
 
-                                    💰 ₹{{ item.boat.priceinr }}
+                                    ðŸ’° â‚¹{{ item.boat.priceinr }}
 
                                 </p>
 
@@ -454,7 +454,7 @@
 
                                 <div class="alert alert-success ai-score">
 
-                                    🤖 AI Match:
+                                    ðŸ¤– AI Match:
 
                                     <strong>
 
@@ -516,7 +516,7 @@
 
                         <div class="alert alert-warning text-center">
 
-                            😔 No suitable houseboats were found.
+                            ðŸ˜” No suitable houseboats were found.
 
                             Try changing your preferences.
 
@@ -553,4 +553,3 @@
 </body>
 
 </html>
-```

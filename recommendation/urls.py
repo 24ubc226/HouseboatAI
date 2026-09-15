@@ -13,7 +13,16 @@ urlpatterns = [
         views.home,
         name="home"
     ),
-path("rag/", views.rag_chat, name="rag_chat"),
+
+    # =========================================================
+    # RAG CHATBOT
+    # =========================================================
+
+    path(
+        "rag/",
+        views.rag_chat,
+        name="rag"
+    ),
 
     # =========================================================
     # ADMIN DASHBOARD
@@ -25,7 +34,6 @@ path("rag/", views.rag_chat, name="rag_chat"),
         name="admin_dashboard"
     ),
 
-
     # =========================================================
     # ADMIN MANAGEMENT
     # =========================================================
@@ -34,6 +42,11 @@ path("rag/", views.rag_chat, name="rag_chat"),
         "admin-houseboats/",
         views.admin_houseboats,
         name="admin_houseboats"
+    ),
+path(
+        "admin-houseboats/add/",
+        views.add_houseboat,
+        name="add_houseboat"
     ),
 
     path(
@@ -54,26 +67,23 @@ path("rag/", views.rag_chat, name="rag_chat"),
         name="admin_wishlist"
     ),
 
+    path(
+        "admin-contact-messages/",
+        views.admin_contact_messages,
+        name="admin_contact_messages"
+    ),
 
-    # =========================================================
-  
-path(
-    "admin-contact-messages/",
-    views.admin_contact_messages,
-    name="admin_contact_messages"
-),
+    path(
+        "admin-contact-messages/read/<int:id>/",
+        views.mark_contact_read,
+        name="mark_contact_read"
+    ),
 
-path(
-    "admin-contact-messages/read/<int:id>/",
-    views.mark_contact_read,
-    name="mark_contact_read"
-),
-
-path(
-    "admin-contact-messages/delete/<int:id>/",
-    views.delete_contact_message,
-    name="delete_contact_message"
-),
+    path(
+        "admin-contact-messages/delete/<int:id>/",
+        views.delete_contact_message,
+        name="delete_contact_message"
+    ),
 
     # =========================================================
     # USER DASHBOARD
@@ -85,7 +95,6 @@ path(
         name="user_dashboard"
     ),
 
-
     # =========================================================
     # HOUSEBOAT DETAILS
     # =========================================================
@@ -95,7 +104,6 @@ path(
         views.details,
         name="details"
     ),
-
 
     # =========================================================
     # AUTHENTICATION
@@ -119,7 +127,6 @@ path(
         name="logout"
     ),
 
-
     # =========================================================
     # PAGES
     # =========================================================
@@ -135,7 +142,6 @@ path(
         views.contact,
         name="contact"
     ),
-
 
     # =========================================================
     # BOOKING
@@ -159,7 +165,6 @@ path(
         name="cancel_booking"
     ),
 
-
     # =========================================================
     # WISHLIST
     # =========================================================
@@ -182,7 +187,6 @@ path(
         name="remove_wishlist"
     ),
 
-
     # =========================================================
     # AI PERSONALIZED RECOMMENDATION
     # =========================================================
@@ -192,32 +196,37 @@ path(
         views.recommend,
         name="recommend"
     ),
+
+    # =========================================================
+    # BOOKING APPROVAL / REJECTION
+    # =========================================================
+
     path(
-    "approve-booking/<int:id>/",
-    views.approve_booking,
-    name="approve_booking",
-),
+        "approve-booking/<int:id>/",
+        views.approve_booking,
+        name="approve_booking"
+    ),
 
-path(
-    "reject-booking/<int:id>/",
-    views.reject_booking,
-    name="reject_booking",
-),
-path(
-    "edit-houseboat/<str:id>/",
-    views.edit_houseboat,
-    name="edit_houseboat",
-),
+    path(
+        "reject-booking/<int:id>/",
+        views.reject_booking,
+        name="reject_booking"
+    ),
 
-path(
-    "delete-houseboat/<str:id>/",
-    views.delete_houseboat,
-    name="delete_houseboat",
-),
-path(
-    "edit-houseboat/<str:boat_id>/",
-    views.edit_houseboat,
-    name="edit_houseboat"
-),
+    # =========================================================
+    # HOUSEBOAT MANAGEMENT
+    # =========================================================
+
+    path(
+        "edit-houseboat/<str:id>/",
+        views.edit_houseboat,
+        name="edit_houseboat"
+    ),
+
+    path(
+        "delete-houseboat/<str:id>/",
+        views.delete_houseboat,
+        name="delete_houseboat"
+    ),
 
 ]
